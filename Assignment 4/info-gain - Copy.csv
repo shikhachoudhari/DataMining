@@ -1,0 +1,15 @@
+Day,Outlook,Temp,Humidity,Wind,PlayTennis,Value
+1,Sunny,Hot,High,Weak,No,FALSE
+2,Sunny,Hot,High,Strong,No,FALSE
+3,Overcast,Hot,High,Weak,Yes,TRUE
+4,Rain,Mild,High,Weak,Yes,TRUE
+5,Rain,Cool,Normal,Weak,Yes,TRUE
+6,Rain,Cool,Normal,Strong,No,FALSE
+7,Overcast,Cool,Normal,Strong,Yes,TRUE
+8,Sunny,Mild,High,Weak,No,FALSE
+9,Sunny,Cool,Normal,Weak,Yes,TRUE
+10,Rain,Mild,Normal,Weak,Yes,TRUE
+11,Sunny,Mild,Normal,Strong,Yes,TRUE
+12,Overcast,Mild,High,Strong,Yes,TRUE
+13,Overcast,Hot,Normal,Weak,Yes,TRUE
+14,Rain,Mild,High,Strong,No,FALSE
