@@ -1,8 +1,8 @@
 #include <bits/stdc++.h>
-#include <fstream>
-#include <vector>
-#include <cmath>
-#include <string>
+// #include <fstream>
+// #include <vector>
+// #include <cmath>
+// #include <string>
 
 using namespace std;
 
@@ -45,9 +45,21 @@ vector<double> zScoreNormalization(const vector<double>& data) {
     return normalized_data;
 }
 
+vector<double>decimalscaling(vector<double>data){
+      double max = *max_element(data.begin(), data.end());
+      int n = ceil(log10(max));
+
+      vector<double>deci_scaling;  
+      for(double val:data){
+         val = val/pow(10,n);
+         deci_scaling.push_back(val);
+      }
+      return deci_scaling;
+}
+
 int main() {
-    ifstream input_file("input.txt");
-    ofstream output_file("output.txt");
+    ifstream input_file("data.csv");
+    ofstream output_file("i1.csv");
     
     vector<double> data;
     double value;
@@ -62,6 +74,7 @@ int main() {
     
     vector<double> min_max_normalized = minMaxNormalization(data, min_new, max_new);
     vector<double> z_score_normalized = zScoreNormalization(data);
+    vector<double> dec_scalingnor = decimalscaling(data);
     
     output_file << "Min-Max Normalized Data:\n";
     for (double val : min_max_normalized) {
@@ -70,6 +83,11 @@ int main() {
     
     output_file << "\nZ-Score Normalized Data:\n";
     for (double val : z_score_normalized) {
+        output_file << val << "\n";
+    }
+
+    output_file << "\nDecimal Scaling Data: \n";
+    for(double val : dec_scalingnor){
         output_file << val << "\n";
     }
     

@@ -58,12 +58,15 @@ void writeResult(const string &filename, const map<string, map<string, CellData>
     ofstream fw(filename, ios::out);
 
     fw << "Column\\Row, Count, T-Weight, D-Weight, Count, T-Weight, D-Weight, Count, T-Weight, D-Weight" << endl;
-
+     int total1 = 0;
+     for (const auto &rowEntry : rowTotal)
+    {    total1 += rowEntry.second;
+    }
     for (const auto &rowEntry : rowTotal)
     {
         const string &row = rowEntry.first;
         fw << row << ",";
-
+        
         for (const auto &colEntry : columnTotal)
         {
             const string &col = colEntry.first;
@@ -75,19 +78,24 @@ void writeResult(const string &filename, const map<string, map<string, CellData>
         }
 
         fw << rowTotal.at(row) << ","
-           << "100%, " << ((float)rowTotal.at(row) / rowTotal.at(rowTotal.begin()->first)) * 100 << "%" << endl;
+           << "100%," << ((float)rowTotal.at(row) / total1) * 100 << "%" << endl;
     }
 
     fw << "Total,";
+    int total = 0;
+     for (const auto &colEntry : columnTotal)
+    {    total += colEntry.second;
+    }
 
     for (const auto &colEntry : columnTotal)
     {
         fw << colEntry.second << ",";
-        fw << ((float)colEntry.second / columnTotal.at(columnTotal.begin()->first)) * 100 << "%,";
+        fw << ((float)colEntry.second / total) * 100 << "%,";
         fw << "100%,";
+      
     }
 
-    fw << columnTotal.at(columnTotal.begin()->first) << ",100%, 100%" << endl;
+    fw << total<<"," << "100%, 100%" << endl;
 }
 
 int main()

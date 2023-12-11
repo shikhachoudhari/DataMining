@@ -1,103 +1,134 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
-#include <algorithm>
+#include <climits>
 
 using namespace std;
 
-// Function for Bin by Mean method
-vector<int> binByMean(const vector<int>& data, int numBins) {
-    int sum = 0;
-    for (int x : data) {
-        sum += x;
+// Equal Frequency Binning
+vector<vector<int>> equi_frequency_binning(vector<int> data, int m)
+{
+  int a = data.size();
+  int n = a / m;
+  vector<vector<int>> bins;
+  for (int i = 0; i < m; i++)
+  {
+    vector<int> bin;
+    for (int j = i * n; j < (i + 1) * n; j++)
+    {
+      if (j >= a)
+      {
+        break;
+      }
+      bin.push_back(data[j]);
     }
-    double mean = static_cast<double>(sum) / data.size();
-
-    vector<int> binBoundaries(numBins + 1);
-
-    // Calculate bin width based on mean and number of bins
-    int binWidth = static_cast<int>((2 * mean) / numBins);
-
-    for (int i = 0; i < numBins + 1; ++i) {
-        binBoundaries[i] = i * binWidth;
-    }
-
-    vector<int> binAssignments(data.size());
-
-    // Assign data points to bins based on mean-based boundaries
-    for (size_t i = 0; i < data.size(); ++i) {
-        int x = data[i];
-        int bin = 0;
-
-        // Find the appropriate bin for the current data point
-        while (bin < numBins && x >= binBoundaries[bin + 1]) {
-            ++bin;
-        }
-
-        binAssignments[i] = bin + 1; // Add 1 to match bin numbering (starting from 1)
-    }
-
-    return binAssignments;
+    bins.push_back(bin);
+  }
+  return bins;
 }
 
-// Function for Bin by Boundary method
-vector<int> binByBoundary(const vector<int>& data) {
-    int minVal = *min_element(data.begin(), data.end());
-    int maxVal = *max_element(data.begin(), data.end());
+// Equal Width Binning
+vector<vector<int>> equi_width_binning(vector<int> data, int m)
+{
+  int a = data.size();
 
+  int max_ele = INT_MIN;
+  int min_ele = INT_MAX;
 
-   vector<int> binAssignments(data.size());
+  for (int i = 0; i < data.size(); i++)
+  {
+    max_ele = max(max_ele, data[i]);
+    min_ele = min(min_ele, data[i]);
+  }
 
-    // Assign data points to bins based on bin boundaries
-    for (size_t i = 0; i < data.size(); ++i) {
-        int x = data[i];
-        if(x-minVal < maxVal-x){
-            binAssignments[i] = 1;
-        }
-        else{
-            binAssignments[i] = 2; 
-        }
+  int w = (max_ele - min_ele) / m;
+  int min1 = min_ele;
+
+  vector<int> arr;
+  for (int i = 0; i < m + 1; i++)
+  { //arr is the vector that shows the range of the data to be pushed in the bins
+    arr.push_back(min1 + w * i); 
+  }
+
+  vector<vector<int>> arri;
+  for (int i = 0; i < m; i++)
+  {
+    vector<int> temp;
+    for (int j : data)
+    {
+      if (j >= arr[i] && j <= arr[i + 1])
+      {
+        temp.push_back(j);
+      }
     }
-
-
-
-    return binAssignments;
+    arri.push_back(temp);
+  }
+  return arri;
 }
 
-int main() {
-    ifstream inputFile("input1.txt");
-    ofstream outputFile("output.txt");
-
-    if (!inputFile.is_open() || !outputFile.is_open()) {
-        cout << "Error opening files." << endl;
-        return 1;
+// Reading data from CSV
+vector<int> readCSV(string filename)
+{
+  ifstream inputFile(filename);
+  vector<int> data;
+  string line, value;
+  while (getline(inputFile, line))
+  {
+    stringstream ss(line);
+    while (getline(ss, value, ','))
+    {
+      data.push_back(stoi(value));
     }
+  }
+  inputFile.close();
+  return data;
+}
 
-    vector<int> data;
-    int value;
-    while (inputFile >> value) {
-        data.push_back(value);
+// Write binning outputs to CSV
+void writeCSV(string filename, vector<vector<int>> bins)
+{
+  ofstream outputFile(filename);
+  for (int i = 0; i < bins.size(); i++)
+  {
+    outputFile << "Bin " << i + 1 << ",";
+    for (int num : bins[i])
+    {
+      outputFile << num << ",";
     }
+    outputFile << "\n";
+  }
+  outputFile.close();
+}
 
-    int numBins = 3;
+int main()
+{
+  vector<int> data = readCSV("data.csv");
+  int m;
 
-    // Bin by Mean
-    vector<int> binByMeanResult = binByMean(data, numBins);
-    outputFile << "Bin by Mean results:" << endl;
-    for (size_t i = 0; i < data.size(); ++i) {
-        outputFile << data[i] << " -> Bin " << binByMeanResult[i] << endl;
-    }
-    outputFile << endl;
+  int method;
+  cout << "Choose binning method: " << endl;
+  cout << "1. Equal Frequency Binning" << endl;
+  cout << "2. Equal Width Binning" << endl;
+  cout << "\nEnter method number: ";
+  cin >> method;
+  cout << "\nEnter number of bins: ";
+  cin >> m;
 
-    // Bin by Boundary
-    vector<int> binByBoundaryResult = binByBoundary(data);
-    outputFile << "Bin by Boundary results:" << endl;
-    for (size_t i = 0; i < data.size(); ++i) {
-        outputFile << data[i] << " -> Bin " << binByBoundaryResult[i] << endl;
-    }
+  if (method == 1)
+  {
+    vector<vector<int>> freqBins = equi_frequency_binning(data, m);
+    writeCSV("output_equi_frequency_binning.csv", freqBins);
+  }
+  else if (method == 2)
+  {
+    vector<vector<int>> widthBins = equi_width_binning(data, m);
+    writeCSV("output_equi_width_binning.csv", widthBins);
+  }
+  else
+  {
+    cout << "Invalid method choice." << endl;
+  }
 
-    inputFile.close();
-    outputFile.close();
-
-    return 0;
+  return 0;
 }

@@ -11,7 +11,7 @@ int main()
 {
     // Variables to store data
     string line, word;
-    ifstream file("bayes.csv");
+    ifstream file("info-gain.csv");
     string day, outlook, three, four, five, six;
     map<string, double> parent;
     map<string, map<string, map<string, double>>> child;

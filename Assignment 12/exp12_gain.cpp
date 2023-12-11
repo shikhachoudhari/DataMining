@@ -2,11 +2,11 @@
 using namespace std;
 
 // Global variables to store data and results
-vector<string> sub_classes;
-map<string, int> mainClass;
-map<string, unordered_set<string>> dist_val;
-map<string, int> dist_val_count;
-map<string, map<string, int>> val_count;
+vector<string> sub_classes;  //it stores the subclass names
+map<string, int> mainClass;  //it stores total yes and no 
+map<string, unordered_set<string>> dist_val; //it stores like outlook - {sunny, rain, overcast} 
+map<string, double> dist_val_count;  // eg - it stores total sunny ka count 
+map<string, map<string, double>> val_count; //eg it stores sunny- yes, sunny no- count 
 
 // Variable to keep track of maximum gain and selected root
 double maxGain = DBL_MIN;
@@ -18,10 +18,13 @@ ofstream fw("gain_output.csv", ios::out);
 // Function to calculate the information gain and select the root
 void calculateGain(string subClass, double mainC_gain)
 {
+  
     double totR = mainClass["Yes"] + mainClass["No"];
     double ent = 0;
+    unordered_set<string>sets = dist_val[subClass];
 
-    for (auto dv : dist_val[subClass])
+
+    for (auto dv : sets)
     {
         double tR = dist_val_count[dv];
         double pR = val_count[dv]["Yes"], nR = val_count[dv]["No"];
@@ -50,7 +53,7 @@ void calculateGain(string subClass, double mainC_gain)
 int main()
 {
     // Open and read the input file
-    fstream file("gain_input.csv", ios::in);
+    ifstream file("info-gain.csv");
     string line, word;
     string day, outlook, temp, humidity, wind, playGame;
 
@@ -72,7 +75,7 @@ int main()
         getline(str, temp, ',');
         getline(str, humidity, ',');
         getline(str, wind, ',');
-        getline(str, playGame, ',');
+        getline(str, playGame, '.');
 
         if (j == 0)
         {
@@ -91,7 +94,7 @@ int main()
         dist_val["temp"].insert(temp);
         dist_val["humidity"].insert(humidity);
         dist_val["wind"].insert(wind);
-
+    
         mainClass[playGame]++;
 
         dist_val_count[day]++;

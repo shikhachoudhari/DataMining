@@ -71,7 +71,7 @@ string agglomerative(string input)
         }
     }
 
-    cout << "Clusters Chosen: " << pt1 << " & " << pt2 << endl;
+    cout << "Clusters merged: " << pt1 << " & " << pt2 << endl;
 
     string up, down;
 
@@ -105,10 +105,10 @@ string agglomerative(string input)
         point = p.first;
         int d1 = p.second;
 
-        if (point[0] < up[0])
+        if (point[0] < up[0])    //FA distance 
             d1 = min(d1, dm[up][point]);
         else
-            d1 = min(d1, dm[point][up]);
+            d1 = min(d1, dm[point][up]); //EA diatance
 
         dm[newPt][point] = d1;
     }
@@ -134,6 +134,7 @@ string agglomerative(string input)
                 dm[point].erase(down);
         }
     }
+
 
     dm.erase(up);
     dm.erase(down);

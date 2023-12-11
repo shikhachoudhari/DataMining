@@ -2,7 +2,7 @@
 #include <map>
 using namespace std;
 
-ifstream fin;                  // Input file stream for reading data from a file.
+                  // Input file stream for reading data from a file.
 double minfre;                 // Minimum frequency for itemsets to be considered frequent.
 vector<set<string>> datatable; // A vector to store transaction data.
 set<string> products;          // Set to store unique products/items in the transactions.
@@ -63,10 +63,10 @@ set<string> apriori_gen(set<string> &sets, int k)
         it2++;
         for (; it2 != sets.end(); it2++)
         {
-            vector<string> v1 = wordsof(*it1);
+            vector<string> v1 = wordsof(*it1);   //here we are merging two itemsets to get the new itemset with k+1- itemset
             vector<string> v2 = wordsof(*it2);
 
-            bool alleq = true;
+            bool alleq = true;  
             for (int i = 0; i < k - 1 && alleq; i++)
                 if (v1[i] != v2[i])
                     alleq = false;
@@ -91,7 +91,7 @@ set<string> apriori_gen(set<string> &sets, int k)
 
 int main()
 {
-    fin.open("transaction.csv", ios::in); // Open the input file for reading.
+    ifstream fin("item_set_input.csv", ios::in); // Open the input file for reading.
 
     if (!fin.is_open())
     {
@@ -109,7 +109,7 @@ int main()
 
         set<string> tmpset;
         for (int i = 0; i < arr.size(); i++)
-            tmpset.insert(arr[i]);
+         {   tmpset.insert(arr[i]);}
         datatable.push_back(tmpset); // Store the transaction data in the 'datatable' vector.
 
         for (set<string>::iterator it = tmpset.begin(); it != tmpset.end(); it++)
@@ -124,7 +124,7 @@ int main()
     minfre = minfre * datatable.size() / 100; // Calculate the minimum frequency threshold.
     cout << "Min frequency:" << minfre << endl;
 
-    queue<set<string>::iterator> q;
+    queue<set<string>::iterator> q;  //queue is of type set<string> type iterators because of k sized-itemsets
     for (set<string>::iterator it = products.begin(); it != products.end(); it++)
         if (freq[*it] < minfre)
             q.push(it);
@@ -141,7 +141,7 @@ int main()
         cout << "{" << *it << "} " << freq[*it] << endl; // Display frequent 1-itemsets.
 
     int i = 2;
-    set<string> prev = cloneit(products);
+    set<string> prev = cloneit(products);  //if in next k+1 itemsets does not satisfy the frequency count then we need the k-itemset that's why we are cloning it for future use
 
     while (i)
     {
@@ -161,7 +161,7 @@ int main()
             {
                 bool pres = true;
                 for (int k = 0; k < arr.size() && pres; k++)
-                    if (datatable[j].find(arr[k]) == datatable[j].end())
+                    if (datatable[j].find(arr[k]) == datatable[j].end())  //search the formed itemset set in the datatable that is the original transactions given as input and counting their frequency in tot variable
                         pres = false;
                 if (pres)
                     tot++;
@@ -178,17 +178,17 @@ int main()
             q.pop();
         }
 
-        bool flag = true;
+        // bool flag = true;
 
-        for (set<string>::iterator it = cur.begin(); it != cur.end(); it++)
-        {
-            vector<string> arr = wordsof(*it);
+        // for (set<string>::iterator it = cur.begin(); it != cur.end(); it++)
+        // {
+        //     vector<string> arr = wordsof(*it);
 
-            if (freq[*it] < minfre)
-                flag = false;
-        }
+        //     if (freq[*it] < minfre)
+        //         flag = false;
+        // }
 
-        if (cur.size() == 0)
+        if (cur.size() == 0)  //at some point there will be a k-itemset where the frequency is always less than min_support
             break;
 
         cout << "\n\nFrequent " << pass++ << " -item set : \n";
@@ -207,3 +207,4 @@ int main()
 
     return 1;
 }
+

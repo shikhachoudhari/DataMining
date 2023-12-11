@@ -5,6 +5,7 @@
 #include<cmath>
 using namespace std;
 
+//function to calculate entropy 
 double calculateEntropy(double positive, double negative){
     double total = positive + negative;
     double entropy = 0.0;
@@ -23,6 +24,7 @@ double calculateEntropy(double positive, double negative){
     return entropy;
 }
 
+//function to calculate info gain
 double computeInformationGain( map<string,int>&parentCounts, map<string,map<string,int> >childCounts){
        
         double positiveParent = parentCounts["Yes"];
@@ -74,12 +76,17 @@ int main(){
         getline(str, humidity, ',');
         getline(str, wind, ',');
         getline(str, playgame, '.');
-        // getline(str, value, ',');
+      
 
 
         if(i == 0){
             i++;
             cout<<"Enter the column for which you want to calculate info gain";
+            cout<<"Press:"<<endl;
+            cout<<"1-Outlook"<<endl;
+            cout<<"2-temp"<<endl;
+            cout<<"3-humidity"<<endl;
+            cout<<"4-wind"<<endl;
             cin >> choice;
             continue;
         }

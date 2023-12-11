@@ -75,7 +75,9 @@ int main()
     string outputFileName = "correlation_output.csv";
 
     vector<int> a = readData(inputFileName);
+    for(auto it: a){cout << it << " ";}cout << endl;
     vector<int> b = readData(inputFileName);
+    for(auto it: b){cout << it << " ";}cout << endl;
 
     float corr_coeff = calculateCorrelationCoefficient(a, b);
 
